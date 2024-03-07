@@ -1,10 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import socketIO from "socket.io";
+import http from "http";
+import path from "path";
+import Route from "./routes/index.js";
+import ConnectDB from "./config/Db.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
+ConnectDB();
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -19,9 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-});
+app.use("/api", Route);
 
 // Error handling middleware
 app.use(notFound);
