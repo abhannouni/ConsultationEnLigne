@@ -7,24 +7,10 @@ export const notFound = (req, res, next) => {
 };
 
 export const errorHandler = (err, req, res, next) => {
-    let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    let message = err.message;
-
-    if (err.name === "CastError" && err.kind === "ObjectId") {
-        statusCode = 404;
-        message = "Ressource introuvable.";
-    }
-
-    if (req.file) {
-        fs.unlink(req.file.path, (err) => {
-            err
-                ? console.log("Error occurred : " + err)
-                : console.log("File deleted due to an error.");
-        });
-    }
-
-    res.status(statusCode).json({
-        message,
-        stack: process.env.NODE_ENV === "production" ? null : err.stack
+    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    res.status(statusCode);
+    res.json({
+        message: err.message,
+        stack: process.env.NODE_ENV === "production" ? "Stack" : err.stack,
     });
-};
+}

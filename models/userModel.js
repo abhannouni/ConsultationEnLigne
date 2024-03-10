@@ -16,6 +16,16 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    userType: {
+      type: String,
+      required: true,
+      default: 'user',
+      /**
+                 * 1 == Admin
+                 * 2 == patient
+                 * 3 == doctor
+                 */
+    },
   },
   {
     timestamps: true,
