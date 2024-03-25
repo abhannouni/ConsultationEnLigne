@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
-import MessageComp from './Message';
+import MessageComp from './Chat';
 
 
 type Message = {
