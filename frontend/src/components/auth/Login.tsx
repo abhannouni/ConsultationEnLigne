@@ -1,19 +1,24 @@
 import { useDispatch } from 'react-redux';
 import { LoginThunk } from '../../redux/thunks/AuthThunk';
 import { useState } from 'react';
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function Login({ switchLogin }: { switchLogin: () => void }) {
+interface Props {
+  switchLogin: () => void;
+}
+
+export default function Login({ switchLogin }: Props) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const loginHandler = () => {
-    console.log(email, password);
     dispatch(LoginThunk({ email, password }));
   };
 
   return (
     <div className="relative flex flex-col text-gray-700 bg-white shadow-md w-96 rounded-xl bg-clip-border">
-      <div className="relative grid mx-4 mb-4 -mt-6 overflow-hidden text-white shadow-lg h-28 place-items-center rounded-xl bg-gradient-to-tr from-gray-900 to-gray-800 bg-clip-border shadow-gray-900/20">
+      <div className="relative grid mx-4 mb-4 -mt-6 overflow-hidden text-white shadow-lg h-28 place-items-center rounded-xl bg-gradient-to-tr from-cyan-600 to-cyan-800 bg-clip-border shadow-cyan-600">
         <h3 className="block font-sans text-3xl antialiased font-semibold leading-snug tracking-normal text-white">
           Sign In
         </h3>
@@ -77,7 +82,7 @@ export default function Login({ switchLogin }: { switchLogin: () => void }) {
       </div>
       <div className="p-6 pt-0">
         <button
-          className="block w-full select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          className="block w-full select-none rounded-lg bg-gradient-to-tr from-cyan-600 to-cyan-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-bg-cyan-600 transition-all hover:shadow-lg hover:bg-cyan-600 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           type="button"
           onClick={loginHandler}
         >
@@ -97,6 +102,7 @@ export default function Login({ switchLogin }: { switchLogin: () => void }) {
           </a>
         </p>
       </div>
+      <ToastContainer autoClose={2000} />
     </div>
   );
 }
