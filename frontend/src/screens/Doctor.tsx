@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const Chat: React.FC = () => {
+const Doctor: React.FC = () => {
     return ( <Outlet /> );
 };
 
-export default Chat;
+export default Doctor;

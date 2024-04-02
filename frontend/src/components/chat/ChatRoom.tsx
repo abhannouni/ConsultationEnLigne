@@ -1,5 +1,10 @@
-import Conversations from "./Conversations";
 import Chat from "./Chat";
+import { connectWebSocket, sendMessageThunk } from '../../redux/thunks/ChatThunk';
+import React , { useEffect } from 'react';
+import io from 'socket.io-client';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { ChatState, Message } from '../../types/chat';
 
 export default function ChatRoom() {
   const activeConversations = [
@@ -18,26 +23,66 @@ export default function ChatRoom() {
     { name: 'Christine Reid', initials: 'C' },
     { name: 'Jerry Guzman', initials: 'J' }
   ];
-  const messages = [
-    { senderInitial: 'A', messageContent: 'Hey How are you today?', isSender: false },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel ipsa commodi illum saepe numquam maxime asperiores voluptate sit, minima perspiciatis.', isSender: false },
-    { senderInitial: 'A', messageContent: "I'm ok what about you?", isSender: true },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit amet !', isSender: false },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit amet !', isSender: false },
-    { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true, seen: true },
-  ];
+  // const messages = [
+  //   { senderInitial: 'A', messageContent: 'Hey How are you today?', isSender: false },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel ipsa commodi illum saepe numquam maxime asperiores voluptate sit, minima perspiciatis.', isSender: false },
+  //   { senderInitial: 'A', messageContent: "I'm ok what about you?", isSender: true },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit amet !', isSender: false },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit amet !', isSender: false },
+  //   { senderInitial: 'A', messageContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing. ?', isSender: true, seen: true },
+  // ];
+
+  const dispatch = useDispatch();
+  const { socket, messages } = useSelector<{ chat: ChatState }, ChatState>((state) => state.chat);
+
+  useEffect(() => {
+    const socket = io('http://localhost:5000', {
+      withCredentials: true, // Enable credentials (if using cookies for authentication)
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
+    });
+
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch]);
+
+
+  const sendMessage = (content: string) => {
+    if (socket) {
+      const message: Message = {
+        content,
+        sender: 'You',
+        timestamp: Date.now(),
+      };
+      dispatch(sendMessageThunk(message, socket));
+    }
+  };
+
+
   return (
-    <div className="flex h-screen antialiased text-gray-800">
+    <div className="flex antialiased text-gray-800" 
+          style={{
+            height: '550px',
+          }}
+    >
         <div className="flex flex-row h-full w-full overflow-x-hidden">
           {/*  */}
-          <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+          {/* <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
             <Conversations activeConversations={activeConversations} />
-          </div>
+          </div> */}
           {/*  */}
           <div className="flex flex-col flex-auto h-full p-6 sticky top-0">
             <div
@@ -74,6 +119,7 @@ export default function ChatRoom() {
                     <input
                       type="text"
                       className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                      onKeyPress={(e) => e.key === 'Enter' && sendMessage(e.currentTarget.value)}
                     />
                     <button
                       className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"

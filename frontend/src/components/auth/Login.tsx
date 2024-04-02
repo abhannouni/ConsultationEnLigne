@@ -3,6 +3,7 @@ import { LoginThunk } from '../../redux/thunks/AuthThunk';
 import { useState } from 'react';
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {useNavigate}  from 'react-router-dom';
 
 interface Props {
   switchLogin: () => void;
@@ -12,8 +13,10 @@ export default function Login({ switchLogin }: Props) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
   const loginHandler = () => {
-    dispatch(LoginThunk({ email, password }));
+    dispatch(LoginThunk({ email, password } ));
+    navigate('/');
   };
 
   return (

@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-const Chat: React.FC = () => {
+const Application: React.FC = () => {
     return ( <Outlet /> );
 };
 
-export default Chat;
+export default Application;

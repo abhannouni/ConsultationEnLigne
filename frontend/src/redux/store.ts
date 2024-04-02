@@ -1,11 +1,12 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 
 import Authreducer from './reducers/AuthReducer';
+import ChatReducer from './reducers/ChatReducer';
 import { thunk } from 'redux-thunk';
+export type RootState = ReturnType<typeof rootReducer>;
 const rootReducer = combineReducers({
     auth: Authreducer,
+    chat: ChatReducer,
 });
 // @ts-ignore
-const store = createStore(rootReducer, applyMiddleware(thunk));
-
-export default store;
+export const store = createStore(rootReducer, applyMiddleware(thunk));

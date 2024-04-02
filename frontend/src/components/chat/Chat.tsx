@@ -40,7 +40,7 @@ interface MessageListProps {
 const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   return (
     <div className="flex flex-col h-full">
-      <div className="grid grid-cols-12 gap-y-2">
+      <div className="">
         {messages.map((message, index) => (
           <MessageBubble key={index} message={message} />
         ))}

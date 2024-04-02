@@ -1,8 +1,15 @@
+type User = {
+    _id: string,
+    name: string,
+    email: string,
+    role: string,
+    token: string
+}
 
-export const login = (email: string, password: string)=> (
+export const login = (data: User)=> (
     { 
         type: 'LOGIN', 
-        payload: { email, password }
+        payload: data
     }
 )
 
