@@ -14,14 +14,12 @@ const AppointmentSchema = new mongoose.Schema<IAppointment>({
     doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     date: { type: String, required: true },
     time: { type: String, required: true },
-    status: { type: String, required: true },
-    description: { type: String, required: true },
 }, {
     timestamps: true
 });
 
 AppointmentSchema.methods.isValid = function() {
-    if (!this.user || !this.doctor || !this.date || !this.time || !this.status || !this.description) {
+    if (!this.user || !this.doctor || !this.date || !this.time) {
         return false;
     }
     return true;

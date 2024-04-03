@@ -1,6 +1,7 @@
 import Appointment from "../models/appointmentModel";
 import InfoDoc from "../models/infoDocModel";
 import { Request, Response } from "express";
+import { RequestWithUser } from "../types/user";
 
 /**
  * @description get   Appointment
@@ -10,28 +11,27 @@ import { Request, Response } from "express";
 
 export const getAppointments = async (req: Request, res: Response) => {
     try {
-        const { date, doctorId } = req.body;
-        console.log(date, doctorId);
+        const { date, doctorId } = req.query as { date: string, doctorId: string };
         
         
         // Check if doctor exists
-        const doctorExists = await InfoDoc.findOne({ _id: doctorId });
+        const doctorExists = await InfoDoc.findOne({ user: doctorId});
         if (!doctorExists) {
             return res.status(404).json({ error: "Doctor not found." });
         }
 
         // Find appointments by date and doctor ID
         const appointments = await Appointment.find({ 'date': date, 'doctor': doctorId })
-            .populate('infoDoc')
-            .populate('user', '-password');
 
+        console.log(appointments);
+        
         if (appointments.length === 0) {
-            return res.status(200).json(appointments);
+            return res.status(200).json({ message: 'No appointments found' });
         }
 
         res.status(200).json(appointments);
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        // res.status(500).json({ message: error.message });
     }
 };
 
@@ -42,35 +42,39 @@ export const getAppointments = async (req: Request, res: Response) => {
  * @public
 */
 
-export const createAppointment = async (req: Request, res: Response) => {
-    const newAppointment = new Appointment(req.body);
-
+export const createAppointment = async (req: RequestWithUser, res: Response) => {
     // Add validation checks here
-    if (!newAppointment) {
+    if (!req.body.selectedDate || !req.body.id || !req.body.time) {
         return res.status(400).json({ message: 'Invalid Appointment data' });
     }
 
     // Check if the date is already reserved
-    const isReserved = await Appointment.exists({ date: newAppointment.date });
+    const isReserved = await Appointment.exists({ date: req.body.selectedDate });
     if (isReserved) {
         return res.status(409).json({ message: 'Date is already reserved' });
     }
 
     // Check with the current date
     const currentDate = new Date();
-    const AppointmentDate = new Date(newAppointment.date);
-
-    if (AppointmentDate < currentDate) {
+    const newDate = new Date(req.body.selectedDate);
+    if (newDate < currentDate) {
         return res.status(400).json({ message: 'Invalid date' });
     }
-
     try {
+        const newAppointment = new Appointment({
+            date: newDate, // Store as a Date object
+            time: req.body.time,
+            doctor: req.body.id,
+            user: req.user._id,
+            createdAt: currentDate,
+        });
         await newAppointment.save();
         res.status(201).json(newAppointment);
     } catch (error: any) {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 /**
  * @description update Appointment
