@@ -19,7 +19,9 @@ export const LoginThunk = (data: any) => async (dispatch: any) => {
         console.log("thunk",data);
         
         const response = await baseUrl.post("/users/login", data);
-        dispatch(login(response.data));   
+        dispatch(login(response.data)); 
+        console.log(response.data);
+          
         if(response.status !== 200){
             console.log(response.data.error);
         }

@@ -1,23 +1,14 @@
-import React from 'react'
+import React, { useEffect } from "react";
+
 import ProfileDoctor from '../../components/doctor/DoctorProfile'
-
-interface DoctorInfo {
-  name: string;
-  age: number;
-  gender: string;
-  specialization: string;
-  email: string;
-  phone: string;
-}
-
-interface DoctorSchedule {
-  day: string;
-  time: string;
-}
-
+import { useParams } from "react-router-dom";
 
 const DoctorDetails: React.FC = () => {
-  return <ProfileDoctor />
+  const { id } = useParams<{ id: string }>();
+
+  
+
+  return <ProfileDoctor id={id}/>;
 };
 
-export default DoctorDetails
+export default DoctorDetails;

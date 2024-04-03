@@ -51,7 +51,7 @@ const router = createBrowserRouter(
             <Route index element={<PatientProfilePage />} />
           </Route>
 
-          <Route path="" element={<PrivateRouteDoc />} >
+          <Route path="" element={<PrivateRoute />} >
             <Route path="Application" element={<Application />} >
               <Route index element={<ApplyDoctor />} />
             </Route>

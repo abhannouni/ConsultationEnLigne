@@ -34,12 +34,13 @@ const registerUser = async (req: Request, res: Response) => {
     });
 
     const createdUser = await userObject.save();
-    generateToken(createdUser._id.toString(),res);
+    const token = generateToken(createdUser._id.toString(),res);
     return res.status(201).json({
       _id: createdUser._id,
       name: createdUser.name,
       email: createdUser.email,
       role: createdUser.role,
+      token: token,
     });
   } catch (error) {
     console.error(error);
@@ -64,12 +65,13 @@ const authUser = async (req: Request, res: Response) => {
       if (!comparePwd) {
         return res.status(401).json({ error: "Invalid email or password" });
       } 
-      generateToken(user._id.toString(),res);
+      const token = generateToken(user._id.toString(),res);
       return res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
+        token: token,
       });
     } else {
       return res.status(401).json({ error: "Invalid email or password" });

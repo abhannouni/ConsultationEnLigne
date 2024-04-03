@@ -1,5 +1,6 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAppointmentThunk } from "../../redux/thunks/AppointmentThunk";
 import Appointment from "../../components/doctor/Appointement";
 
 const doctorInfo = {
@@ -12,6 +13,8 @@ const doctorInfo = {
   };
 
 const DoctorAppointment: React.FC = () => {
+    const dispatch = useDispatch();
+    const appointments = useSelector((state: any) => state.Appointments.appointments);
     return (
         <Appointment doctorInfo={doctorInfo} />
     );

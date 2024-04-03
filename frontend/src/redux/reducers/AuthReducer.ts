@@ -8,11 +8,15 @@ export default function AuthReducer(state = initiakState, action: any) {
     switch (action.type) {
         case 'LOGIN':
             const { token , ...user } = action.payload;
+            console.log(action.payload);
+            
             const expires = (Date.now() + 30 * 24 * 60 * 60 * 1000).toString();
             localStorage.setItem('user', JSON.stringify({
                 user
             }));
             localStorage.setItem("expiresAt", expires);
+            console.log(token);
+            
             localStorage.setItem('token', token);
             return {
                 ...state,

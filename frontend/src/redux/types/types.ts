@@ -39,3 +39,16 @@ export interface Message {
     | DisconnectSocketAction
     | SendMessageAction
     | ReceiveMessageAction;
+
+    export type UserType = {
+        _id: string,
+        name: string,
+        email: string,
+        role: string,
+        token: string
+    }
+
+    export type UserResponseType = {
+        user: UserType,
+        token: string
+    }
